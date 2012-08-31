@@ -407,7 +407,7 @@ en:
       map_image: "Map Image (shows standard layer)"
       embeddable_html: "Embeddable HTML"
       licence: "Licence"
-      export_details: 'OpenStreetMap data is licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 license</a>.'
+      export_details: 'Schatzkarte data is public domain/CC0. OpenStreetMap data is licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 license</a>.'
       too_large:
         heading: "Area Too Large"
         body: "This area is too large to be exported as OpenStreetMap XML Data. Please zoom in or select a smaller area."
@@ -939,11 +939,11 @@ en:
   layouts:
     project_name:
       # in <title>
-      title: OpenStreetMap
+      title: Schatzkarte
       # in <h1>
-      h1: OpenStreetMap
+      h1: Schatzkarte
     logo:
-      alt_text: OpenStreetMap logo
+      alt_text: Logo
     welcome_user: "Welcome, %{user_link}"
     welcome_user_link_tooltip: Your user page
     home: home
@@ -1005,8 +1005,8 @@ en:
     foundation_title: The OpenStreetMap Foundation
     sotm2012: 'Come to the 2012 OpenStreetMap Conference, The State of the Map, September 6-8th in Tokyo!'
     license:
-      alt: CC BY-SA 2.0
-      title: OpenStreetMap data is licensed under the Creative Commons Attribution-Share Alike 2.0 Generic License
+      alt: Public domain / CC0
+      title: Schatzkarte data is public domain / CC0
     make_a_donation:
       title: Support OpenStreetMap with a monetary donation
       text: Make a Donation
@@ -1291,10 +1291,10 @@ en:
       shortlink: Shortlink
       license:
         notice: "Licensed under the %{license_name} license by the %{project_name} and its contributors."
-        license_name: "Creative Commons Attribution-Share Alike 2.0"
-        license_url: "http://creativecommons.org/licenses/by-sa/2.0/"
-        project_name: "OpenStreetMap project"
-        project_url: "http://openstreetmap.org"
+        license_name: "public domain/CC0"
+        license_url: "http://creativecommons.org/publicdomain/zero/1.0/deed"
+        project_name: "Schatzkarte"
+        project_url: "http://map.piratenpartei-nrw.de"
       remote_failed: "Editing failed - make sure JOSM or Merkaartor is loaded and the remote control option is enabled"
     edit:
       not_public: "You have not set your edits to be public."

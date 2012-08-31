@@ -76,5 +76,8 @@ module OpenStreetMap
     if STATUS == :database_offline
       config.paths["app/models"].skip_eager_load!
     end
+	
+    # Enable sendmail
+    config.action_mailer.delivery_method = :sendmail
   end
 end

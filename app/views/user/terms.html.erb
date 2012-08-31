@@ -2,34 +2,19 @@
 
 <p><%= t 'user.terms.read and accept' %></p>
 
-<!-- legale is <%= @legale %> -->
-<%= form_tag :action => 'terms' do %>
-  <p>
-    <%= t 'user.terms.legale_select' %>
-    <% [['france', 'FR'], ['italy', 'IT'], ['rest_of_world', 'GB']].each do |name,legale| %>
-      <%= radio_button_tag 'legale', legale, @legale == legale %>
-      <%= label_tag "legale_#{legale}", t('user.terms.legale_names.' + name) %>
-      <script type="text/javascript">
-      <!--
-        $("#legale_<%= legale %>").change(function () {
-          $("#contributorTerms").html("<%=j image_tag 'searching.gif' %>");
-          $("#contributorTerms").load("<%= url_for :legale => legale %>");
-        });
-      // -->
-      </script>
-    <% end %>
-  </p>
-<% end %>
-
 <div id="contributorTerms">
-  <%= render :partial => "terms" %>
+  <p>Dies ist ein Mapserver der Piratenpartei. Er darf von allen Piraten und Freibeutern genutzt werden, um piratenrelevante Geodaten zu erfassen.</p>
+  <p>Bitte übernehme keine Daten aus urheberrechtlich geschützten Quellen! Daten, die auf dieser Karte erfasst werden, dürfen von jedem uneingeschränkt kostenlos verwendet werden. Indem du Daten hier einstellst, bestätigst du, dass du sie als gemeinfrei ("public domain") ansiehst bzw. nach <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.de">CC0</a> freigibst. Dies gilt unabhängig von evtl. widersprüchlichen Texten oder Einstellungen.</p>
+  <p>Die Karte im Hintergrund stammt von OpenStreetMap (siehe Lizenzhinweis unten auf der Karte).</p>
+  <p>Es gibt keine Garantien für die Funktionsfähigkeit, Verfügbarkeit, Datensicherheit oder sonstige Eigenschaften. Die für diese Website verwendete Software stammt ursprünglich von OpenStreetMap. Du wirst daher ggf. an einigen Stellen nicht geänderte Hinweise auf OpenStreetMap und die dort verwendete Lizenz finden. Wir bitten dies zu entschuldigen. Bitte verwende die Blogfunktion nicht. Sie ist halb kaputt und kann jederzeit ohne Vorwarnung entfernt werden.</p>
 </div>
 
 <%= form_tag({:action => "save"}, { :id => "termsForm" }) do %>
   <p>
-    <label for="confirm_pd_checkbox"><%= t 'user.terms.consider_pd' %></label>
-    <%= check_box('user', 'consider_pd') %>
-    <span class="minorNote">(<%= link_to(t('user.terms.consider_pd_why'), t('user.terms.consider_pd_why_url'), :target => :new)%>)</span>
+    <label for="fakecheckbox">Ich betrachte meine Einträge als gemeinfrei/Public Domain</label>
+	<!-- check and hide original checkbox, add disabled always-checked checkbox for display (disabled boxes dont get POSTed, disabling the original box causes trouble) -->
+	<input type="checkbox" id="fakecheckbox" name="fakecheckbox" checked="checked" disabled="disabled">
+    <%= check_box('user', 'consider_pd', {:checked => "checked", :style =>"display: none;"} ) %>
   </p>
   <p>
     <%= hidden_field_tag('referer', h(params[:referer])) unless params[:referer].nil? %>

@@ -7,6 +7,8 @@ var popup;
 function createMap(divName, options) {
    options = options || {};
 
+   var attribution = 'Basiskarte (c) <a target="_parent" href="http://www.openstreetmap.org">OpenStreetMap</a> und Mitwirkende, <a target="_parent" href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.'
+   
    map = new OpenLayers.Map(divName, {
       controls: options.controls || [
          new OpenLayers.Control.ArgParser(),
@@ -21,9 +23,24 @@ function createMap(divName, options) {
       displayProjection: new OpenLayers.Projection("EPSG:4326"),
       theme: "<%= asset_path 'theme/openstreetmap/style.css' %>"
    });
-
+   
+   var mapquest = new OpenLayers.Layer.OSM(I18n.t("javascripts.map.base.mapquest"), [
+      "http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+      "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+      "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+      "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"
+   ], {
+      attribution: attribution + " Tiles courtesy of <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png'>",
+      keyid: "mapquest",
+      displayOutsideMaxExtent: true,
+      wrapDateLine: true,
+      numZoomLevels: 19,
+      layerCode: "Q"
+   });
+   
+   map.addLayer(mapquest);
    var mapnik = new OpenLayers.Layer.OSM.Mapnik(I18n.t("javascripts.map.base.standard"), {
-      attribution: "",
+      attribution: attribution,
       keyid: "mapnik",
       displayOutsideMaxExtent: true,
       wrapDateLine: true,
@@ -32,7 +49,7 @@ function createMap(divName, options) {
    map.addLayer(mapnik);
 
    var cyclemap = new OpenLayers.Layer.OSM.CycleMap(I18n.t("javascripts.map.base.cycle_map"), {
-      attribution: "Tiles courtesy of <a href='http://www.opencyclemap.org/' target='_blank'>Andy Allan</a>",
+      attribution: attribution + " Tiles courtesy of <a href='http://www.opencyclemap.org/' target='_blank'>Andy Allan</a>",
       keyid: "cyclemap",
       displayOutsideMaxExtent: true,
       wrapDateLine: true,
@@ -41,28 +58,13 @@ function createMap(divName, options) {
    map.addLayer(cyclemap);
 
    var transportmap = new OpenLayers.Layer.OSM.TransportMap(I18n.t("javascripts.map.base.transport_map"), {
-      attribution: "Tiles courtesy of <a href='http://www.opencyclemap.org/' target='_blank'>Andy Allan</a>",
+      attribution: attribution + " Tiles courtesy of <a href='http://www.opencyclemap.org/' target='_blank'>Andy Allan</a>",
       keyid: "transportmap",
       displayOutsideMaxExtent: true,
       wrapDateLine: true,
       layerCode: "T"
    });
    map.addLayer(transportmap);
-
-   var mapquest = new OpenLayers.Layer.OSM(I18n.t("javascripts.map.base.mapquest"), [
-      "http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-      "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-      "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
-      "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"
-   ], {
-      attribution: "Tiles courtesy of <a href='http://www.mapquest.com/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png'>",
-      keyid: "mapquest",
-      displayOutsideMaxExtent: true,
-      wrapDateLine: true,
-      numZoomLevels: 19,
-      layerCode: "Q"
-   });
-   map.addLayer(mapquest);
 
    markers = new OpenLayers.Layer.Markers("Markers", {
       displayInLayerSwitcher: false,

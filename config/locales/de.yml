@@ -415,7 +415,7 @@ de:
       area_to_export: Bereich für den Export
       embeddable_html: HTML zum Einbinden
       export_button: Export
-      export_details: Die von OpenStreetMap zur Verfügung gestellten Daten sind unter der <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Lizenz</a> lizenziert.
+      export_details: Die Schatzkarte-Daten können frei verwendet werden (gemeinfrei/public domain/CC0). Die von OpenStreetMap zur Verfügung gestellten Daten sind unter der <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Lizenz</a> lizenziert.
       format: "Format:"
       format_to_export: Format für den Export
       image_size: "Bildgröße:"
@@ -998,7 +998,7 @@ de:
     log_in: Anmelden
     log_in_tooltip: Für dein Benutzerkonto anmelden
     logo: 
-      alt_text: OpenStreetMap Logo
+      alt_text: Logo
     logout: Abmelden
     logout_tooltip: Abmelden
     make_a_donation: 
@@ -1329,9 +1329,9 @@ de:
       js_1: Dein Browser unterstützt kein JavaScript oder du hast es deaktiviert.
       js_2: OpenStreetMap nutzt JavaScript für die Kartendarstellung.
       license: 
-        license_name: Creative Commons „Namensnennung, Weitergabe unter gleichen Bedingungen 2.0“
+        license_name: Public Domain (Gemeinfrei) / CC0
         notice: Lizenziert unter %{license_name} Lizenz durch das %{project_name} und seine Mitwirkenden.
-        project_name: OpenStreetMap Projekt
+        project_name: Schatzkarte
       permalink: Permanentlink
       remote_failed: Das Bearbeiten ist fehlgeschlagen. Stelle sicher, dass JOSM oder Merkaartor gestartet ist und die Remote-Control-Option aktiviert ist.
       shortlink: Shortlink

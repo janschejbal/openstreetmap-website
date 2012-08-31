@@ -1,11 +1,11 @@
 defaults: &defaults
   # The server URL
-  server_url: "www.openstreetmap.org"
+  server_url: "map.piratenpartei-nrw.de"
   # The generator
-  generator: "OpenStreetMap server"
+  generator: "PirateMap server"
   # Sender addresses for emails
-  email_from: "OpenStreetMap <webmaster@openstreetmap.org>"
-  email_return_path: "bounces@openstreetmap.org"
+  email_from: "Piratenmap <map@piratenpartei-nrw.de>"
+  email_return_path: "map@piratenpartei-nrw.de"
   # API version
   api_version: "0.6"
   # Application status - posstible values are:
@@ -15,9 +15,9 @@ defaults: &defaults
   #   :database_readonly - database and site in read-only mode
   #   :database_offline - database offline with site in emergency mode
   #   :gpx_offline - gpx storage offline
-  status: :online
+  status: :gpx_offline
   # The maximum area you're allowed to request, in square degrees
-  max_request_area: 0.25
+  max_request_area: 1
   # Number of GPS trace/trackpoints returned per-page
   tracepoints_per_page: 5000
   # Maximum number of nodes that will be returned by the api in a map request
@@ -70,11 +70,11 @@ defaults: &defaults
   # Default editor
   default_editor: "potlatch2"
   # OAuth consumer key for Potlatch 2
-  #potlatch2_key: ""
+  potlatch2_key: "TODO"
   # Whether to require users to view the CTs before continuing to edit...
-  require_terms_seen: false
+  require_terms_seen: true
   # Whether to require users to agree to the CTs before editing
-  require_terms_agreed: false
+  require_terms_agreed: true
   # Piwik details
   #piwik_location: "piwik.openstreetmap.org"
   #piwik_site: 1
