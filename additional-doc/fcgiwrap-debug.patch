@@ -1,0 +1,29 @@
+diff --git a/fcgiwrap.c b/fcgiwrap.c
+index aeccf3b..bf6667d 100644
+--- a/fcgiwrap.c
++++ b/fcgiwrap.c
+@@ -483,9 +483,24 @@ static void inherit_environment(void)
+ 	}
+ }
+ 
++static void dumpenvvar(const char *name) {
++	FCGI_fputs("\n", FCGI_stdout);
++	FCGI_fputs(name, FCGI_stdout);
++	FCGI_fputs(": ", FCGI_stdout);
++	if (getenv(name)) FCGI_fputs(getenv(name), FCGI_stdout);
++}
++
+ static void error_403(const char *reason, const char *filename)
+ {
+ 	FCGI_fputs("Status: 403 Forbidden\nContent-type: text/plain\n\n403", FCGI_stdout);
++	dumpenvvar("SCRIPT_FILENAME");
++	dumpenvvar("SCRIPT_NAME");
++	dumpenvvar("DOCUMENT_ROOT");
++	dumpenvvar("REQUEST_URI");
++	dumpenvvar("DOCUMENT_URI");
++	dumpenvvar("SERVER_PROTOCOL");
++	dumpenvvar("REQUEST_METHOD");
++	dumpenvvar("QUERY_STRING");
+ 	if (filename) {
+ 		FCGI_fprintf(FCGI_stderr, "%s (%s)\n", reason, filename);
+ 	} else {

@@ -1,0 +1,92 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          openstreetmap
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the openstreetmap instance
+# Description:       starts the custom nginx instance hosting the OSM instance, the data update loop and the Overpass API dispatcher
+### END INIT INFO
+
+# copy/link to  /etc/init.d/openstreetmap, then install using "/usr/sbin/update-rc.d -f openstreetmap defaults"
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NGINX=/opt/nginx/sbin/nginx
+
+case "$1" in
+  start)
+	echo "Starting OpenStreetMap instance"
+        echo -n "Starting nginx: "
+        $NGINX || { echo "failed."; exit 1; }
+        echo "started."
+
+	echo -n "Starting data update loop: "
+	start-stop-daemon --start --oknodo -b --exec /var/openstreetmap/update-osm-data-loop.sh || { echo "failed."; exit 1; }
+	echo "started."
+
+	echo -n "Starting Overpass API dispatcher: "
+	start-stop-daemon --start --oknodo -b --exec /var/openstreetmap/overpass/bin/dispatcher -- --osm-base --meta --db-dir=/var/openstreetmap/overpass-db/ || { echo "failed."; exit 1; }
+	echo "started."
+
+	echo "Instance started."
+
+        ;;
+  stop)
+	echo "Stopping OpenStreetMap instance"
+        echo -n "Stopping nginx: "
+        $NGINX -s stop
+        echo "stopped."
+
+	echo -n "Stopping data update loop: "
+	killall -q update-osm-data-loop.sh || true
+	echo "stopped."
+
+	echo -n "Stopping Overpass API dispatcher: "
+	{ timeout 2 /var/openstreetmap/overpass/bin/dispatcher --terminate; } || {
+		echo "failed.";
+		echo -n "Killing Overpass API dispatcher and deleting its files: ";
+		killall -q "overpass/bin/dispatcher" || true;
+		rm -f /var/openstreetmap/overpass-db/osm3s-*;
+	        rm -f /dev/shm/osm3s-*;
+		echo "done."
+	}
+
+	echo "Instance stopped."
+        ;;
+  restart)
+	echo "Restarting OpenStreetMap instance."
+	$0 stop;
+	sleep 1;
+	$0 start;
+	;;
+  cleanup)
+	echo "Cleaning up OpenStreetMap instance."
+	echo -n "Killing all nginx processes..."
+	killall -q nginx
+
+	echo -n "Killing all data update loops..."
+	killall -q update-osm-data-loop.sh
+
+	echo -n "Deleting nginx pid file..."
+	rm -f /opt/nginx/logs/nginx.pid
+
+	echo -n "Killing all dispatchers..."
+	killall -q "overpass/bin/dispatcher"
+
+	echo -n "Cleaning up dispatcher files..."
+	rm -f $DB_DIR/osm3s-*
+	rm -f /dev/shm/osm3s-*
+
+	echo -n "Cleanup finished."
+	;;
+  *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|kill}" >&2
+        echo "  kill kills all remaining processes and removes lock files" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

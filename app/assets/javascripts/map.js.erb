@@ -4,6 +4,173 @@ var markers;
 var vectors;
 var popup;
 
+
+
+
+///////////////// PIRATENKRAM ANFANG ///////////////////////////////////////////////////////////////////////////////////
+
+function piraten_getFeatureStyles(feature) {
+	var tags = feature.attributes;
+	
+	// nodes
+	if (tags['plakat']) {
+		var typ = '';
+		var status = tags['plakat'];
+		var validstatus = {'empfehlung':1, 'fehlt':1, 'gehaengt':1, 'kaputt':1, 'entfernt':1};
+		if (!validstatus[status]) status = "gehaengt";
+		
+		if (tags['plakattyp']) {
+			if (tags['plakattyp'] == 'wand') typ = 'wand-';
+			if (tags['plakattyp'] == 'grossplakat') typ = 'grossplakat-';
+		}
+		
+		return {'externalGraphic': 'http://www.janschejbal.de/piraten/piratenmap-definitions/images/plakat-'+typ+status+'.png'};
+	}
+	
+	if (tags['ort'] == 'stammtisch') return {'externalGraphic': 'http://www.janschejbal.de/piraten/piratenmap-definitions/images/stammtisch.png'};
+	if (tags['ort'] == 'geschaeftsstelle') return {'externalGraphic': 'http://www.janschejbal.de/piraten/piratenmap-definitions/images/geschaeftsstelle.png'};
+	if (tags['aktion']) return {'externalGraphic': 'http://www.janschejbal.de/piraten/piratenmap-definitions/images/stand.png'};
+	if (tags['demo'] == 'kundgebung') return {'externalGraphic': 'http://www.janschejbal.de/piraten/piratenmap-definitions/images/kundgebung.png'};
+	
+	// node AND way!
+	if (tags['ueberwachung'] == 'kamera') return {
+			'externalGraphic': 'http://www.janschejbal.de/piraten/piratenmap-definitions/images/kamera.png',
+			'strokeColor': '#0000ff',	
+			'strokeWidth': '3',	
+			'strokeOpacity': 0.7,	
+			'fillOpacity': 0.4,	
+			'fillColor': '#0000ff',
+		};
+
+	// ways
+	if (tags['demo'] == 'route') return {
+			'strokeColor': '#ff8000',	
+			'strokeWidth': '16',	
+			'strokeOpacity': 0.8,	
+		};
+
+	if (tags['demo'] == 'bannmeile') return {
+			'fillColor': '#ff0000',
+			'fillOpacity': 0.4,	
+			'strokeColor': '#ff0000',	
+			'strokeOpacity': 1.0,	
+			'strokeWidth': '4',
+			'strokeDashstyle': 'dash',
+		};
+		
+	if (tags['gebiet']) {
+		var result = {
+				'fillColor': '#666666',
+				'fillOpacity': 0.3,					
+				'strokeColor': '#666666',
+				'strokeOpacity': 0.5,					
+			};
+		if (tags['gebietsstatus'] == "todo")       { result['fillColor'] = result['strokeColor'] = '#ff3333';}
+		if (tags['gebietsstatus'] == "erledigt")   { result['fillColor'] = result['strokeColor'] = '#00ff00';}
+		if (tags['gebietsstatus'] == "reserviert") { result['fillColor'] = result['strokeColor'] = '#ffff00';}
+		return result;
+	}
+		
+	console.log(feature);
+	return {};
+}
+
+function piraten_getFeatureProperty(feature, propname, def) {
+	var styles = piraten_getFeatureStyles(feature);
+	if (styles && styles[propname]) {
+		return styles[propname]; 
+	} else {
+		return def;
+	}
+}
+
+function piraten_addLayers(map) {
+	var generalContext = {
+		fill:            function(feature) { return piraten_getFeatureProperty(feature, 'fill', true); },
+		fillColor:       function(feature) { return piraten_getFeatureProperty(feature, 'fillColor', '#ee9900'); },
+		fillOpacity:     function(feature) { return piraten_getFeatureProperty(feature, 'fillOpacity', 0.4); },
+		stroke:          function(feature) { return piraten_getFeatureProperty(feature, 'stroke', true); },
+		strokeColor:     function(feature) { return piraten_getFeatureProperty(feature, 'strokeColor', '#ee9900'); },
+		strokeOpacity:   function(feature) { return piraten_getFeatureProperty(feature, 'strokeOpacity', 1.0); },
+		strokeWidth:     function(feature) { return piraten_getFeatureProperty(feature, 'strokeWidth', 1.0); },
+		strokeLinecap:   function(feature) { return piraten_getFeatureProperty(feature, 'strokeLinecap', 'round'); },
+		strokeDashstyle: function(feature) { return piraten_getFeatureProperty(feature, 'strokeDashstyle', 'solid'); },
+		graphic:         function(feature) { return piraten_getFeatureProperty(feature, 'graphic', true); },
+		pointRadius:     function(feature) { return piraten_getFeatureProperty(feature, 'pointRadius', 6.0); },
+		pointerEvents:   function(feature) { return piraten_getFeatureProperty(feature, 'pointerEvents', 'visiblePainted'); },
+		cursor:          function(feature) { return piraten_getFeatureProperty(feature, 'cursor', ''); },
+		externalGraphic: function(feature) { return piraten_getFeatureProperty(feature, 'externalGraphic', ''); },
+		graphicWidth:    function(feature) { return piraten_getFeatureProperty(feature, 'graphicWidth', 24); },
+		graphicHeight:   function(feature) { return piraten_getFeatureProperty(feature, 'graphicHeight', 24); },
+		graphicOpacity:  function(feature) { return piraten_getFeatureProperty(feature, 'graphicOpacity', 1.0); },
+		//graphicXOffset:  function(feature) { return piraten_getFeatureProperty(feature, 'graphicXOffset', -12); },
+		//graphicYOffset:  function(feature) { return piraten_getFeatureProperty(feature, 'graphicYOffset', -12); },
+		rotation:        function(feature) { return piraten_getFeatureProperty(feature, 'rotation', 0.0); },
+		graphicName:     function(feature) { return piraten_getFeatureProperty(feature, 'graphicName', 'circle'); },
+		display:         function(feature) { return piraten_getFeatureProperty(feature, 'display', ''); },
+	};
+	
+	var generalTemplate = {
+		fill:            "${fill}",
+		fillColor:       "${fillColor}",
+		fillOpacity:     "${fillOpacity}",
+		stroke:          "${stroke}",
+		strokeColor:     "${strokeColor}",
+		strokeOpacity:   "${strokeOpacity}",
+		strokeWidth:     "${strokeWidth}",
+		strokeLinecap:   "${strokeLinecap}",
+		strokeDashstyle: "${strokeDashstyle}",
+		graphic:         "${graphic}",
+		pointRadius:     "${pointRadius}",
+		pointerEvents:   "${pointerEvents}",
+		cursor:          "${cursor}",
+		externalGraphic: "${externalGraphic}",
+		graphicWidth:    "${graphicWidth}",
+		graphicHeight:   "${graphicHeight}",
+		graphicOpacity:  "${graphicOpacity}",
+		//graphicXOffset:  "${graphicXOffset}",
+		//graphicYOffset:  "${graphicYOffset}",
+		rotation:        "${rotation}",
+		graphicName:     "${graphicName}",
+		display:         "${display}",
+	}
+	
+	var style = new OpenLayers.Style(generalTemplate, {context: generalContext});
+	var stylemap = new OpenLayers.StyleMap(style);
+	
+	var plakate = new OpenLayers.Layer.Vector("Plakate", {
+				projection: "EPSG:4326",
+				strategies: [new OpenLayers.Strategy.BBOX({ratio: 2})],
+				protocol: new OpenLayers.Protocol.HTTP({
+					url: '/overpass/interpreter?data=node["plakat"](bbox);out;',
+					format: new OpenLayers.Format.OSM({})
+				}),
+				styleMap: stylemap,
+				maxResolution: 40,
+			});
+   map.addLayer(plakate);
+   var sonstiges = new OpenLayers.Layer.Vector("Sonstiges", {
+				projection: "EPSG:4326",
+				strategies: [new OpenLayers.Strategy.BBOX({ratio: 2})],
+				protocol: new OpenLayers.Protocol.HTTP({
+					url: '/overpass/interpreter?data=node["plakat"!~"."](bbox);out;way(bbox);out;',
+					format: new OpenLayers.Format.OSM({})
+				}),
+				styleMap: stylemap,
+   });
+   map.addLayer(sonstiges);
+}
+///////////////// PIRATENKRAM ENDE /////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
 function createMap(divName, options) {
    options = options || {};
 
@@ -13,7 +180,8 @@ function createMap(divName, options) {
       controls: options.controls || [
          new OpenLayers.Control.ArgParser(),
          new OpenLayers.Control.Attribution(),
-         new SimpleLayerSwitcher(),
+         //new SimpleLayerSwitcher(),
+         new OpenLayers.Control.LayerSwitcher(),
          new OpenLayers.Control.Navigation(),
          new OpenLayers.Control.Zoom(),
          new OpenLayers.Control.SimplePanZoom(),
@@ -72,6 +240,8 @@ function createMap(divName, options) {
       projection: "EPSG:900913"
    });
    map.addLayer(markers);
+   
+   piraten_addLayers(map);
 
    return map;
 }
